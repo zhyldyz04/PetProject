@@ -1,9 +1,11 @@
 package api;
 
+import com.github.javafaker.Faker;
 import entities.RequestBody;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.checkerframework.checker.units.qual.C;
 import org.junit.Assert;
 import org.junit.Test;
 import utilities.CashWiseToken;
@@ -93,6 +95,66 @@ public class ApiTest {
     }
 
 }
+
+@Test
+    public void createSeller(){
+    String url = Config.getProperty("cashwiseApiUrl") + "/api/myaccount/sellers";
+    String token = CashWiseToken.GetToken();
+    RequestBody requestBody = new RequestBody();
+    requestBody.setCompany_name("Marlen & Co");
+    requestBody.setSeller_name("Marlen");
+    requestBody.setPhone_number("1235546576");
+    requestBody.setAddress("12 Corday 32");
+    requestBody.setEmail("jimjim@gmail.com");
+
+    Response response = RestAssured.given().auth().oauth2(token)
+            .contentType(ContentType.JSON).body(requestBody).post(url);
+    int statusCode = response.statusCode();
+    Assert.assertEquals(201, statusCode);
+
+}
+
+@Test
+    public void verifyCreatedSeller(){
+    /*
+    "company_name": "string",
+  "seller_name": "string",
+  "email": "string",
+  "phone_number": "string",
+  "address": "string"
+}
+     */
+    Faker faker = new Faker();
+    String url = Config.getProperty("cashwiseApiUrl") + "/api/myaccount/sellers";
+    String token = CashWiseToken.GetToken();
+    RequestBody body = new RequestBody();
+    body.setCompany_name(faker.company().name());
+    body.setSeller_name(faker.name().fullName());
+    body.setPhone_number(faker.phoneNumber().cellPhone());
+    body.setAddress(faker.address().streetAddress());
+    body.setEmail(faker.internet().emailAddress());
+
+    Response response = RestAssured.given().auth().oauth2(token)
+            .contentType(ContentType.JSON).body(body).post(url);
+
+    int status = response.statusCode();
+    System.out.println(response.getStatusCode());
+    Assert.assertEquals(201,status);
+    String sellerID = response.jsonPath().getString("seller_id");
+    System.out.println(sellerID);
+
+
+    Response response1 = RestAssured.given().auth().oauth2(token)
+            .contentType(ContentType.JSON).get(url + "/" + sellerID);
+
+    response1.prettyPrint();
+
+    int statusCode = response.statusCode();
+    Assert.assertEquals(201, statusCode);
+
+
+
+    }
 
 
 

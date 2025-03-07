@@ -1,23 +1,37 @@
 package entities;
 
+
+import lombok.Data;
+
+@Data
 public class RequestBody {
 
     private String email;
     private  String password;
 
-    public String getEmail() {
-        return email;
-    }
+    /*
+    "company_name": "string",
+  "seller_name": "string",
+  "email": "string",
+  "phone_number": "string",
+  "address": "string"
+     */
+    //creating seller body
+    private String company_name;
+    private String  seller_name;
+    private String phone_number;
+    private  String address;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    /*
+    "category_title": "string",
+  "category_description": "string",
+  "flag": true
+     */
+    //creating category
+    private String category_title;
+    private String category_description;
+    private boolean flag;
 
-    public String getPassword() {
-        return password;
-    }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+
 }
