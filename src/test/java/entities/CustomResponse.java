@@ -18,4 +18,7 @@ public class CustomResponse {
     List <CustomResponse> responses;
 
 
+    private  String seller_name;
+
+
 }

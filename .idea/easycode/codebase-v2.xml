@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="com.obiscr.chatgpt.settings.EasyCodeState">
+    <option name="projectFiles" value="$PROJECT_DIR$/src/test/java/api/ApiTest.java;/Users/jika/Desktop/PetProject/src/test/java/api/PojoTest.java;/Users/jika/Desktop/PetProject/src/test/java/api/Sellers.java;/Users/jika/Desktop/PetProject/src/test/java/entities/CustomResponse.java;/Users/jika/Desktop/PetProject/src/test/java/entities/RequestBody.java;/Users/jika/Desktop/PetProject/src/test/java/pages/LoginPage.java;/Users/jika/Desktop/PetProject/src/test/java/runner/RunnerClass.java;/Users/jika/Desktop/PetProject/src/test/java/step_definitions/LoginSteps.java;/Users/jika/Desktop/PetProject/src/test/java/utilities/CashWiseToken.java;/Users/jika/Desktop/PetProject/src/test/java/utilities/Config.java;/Users/jika/Desktop/PetProject/src/test/java/utilities/Driver.java;/Users/jika/Desktop/PetProject/src/test/java/utilities/SeleniumUtils.java" />
+  </component>
+</project>

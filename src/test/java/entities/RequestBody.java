@@ -33,5 +33,10 @@ public class RequestBody {
     private boolean flag;
 
 
+    //creating tag
+    private  String name_tag;
+    private String description;
+
+
 
 }

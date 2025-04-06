@@ -34,7 +34,7 @@ public class Sellers {
         List<String> sellers = new ArrayList<>();
         RequestBody body = new RequestBody();
         Response response;
-        for(int i = 0; i <= 15; i++){
+        for (int i = 0; i <= 15; i++) {
 
             body.setCompany_name(faker.company().name());
             body.setSeller_name(faker.name().fullName());
@@ -42,7 +42,7 @@ public class Sellers {
             body.setPhone_number(faker.phoneNumber().cellPhone());
             body.setAddress(faker.address().streetAddress());
 
-             response = RestAssured.given().auth().oauth2(token)
+            response = RestAssured.given().auth().oauth2(token)
                     .contentType(ContentType.JSON).body(body).post(url);
 
             Assert.assertEquals(201, response.statusCode());
@@ -50,8 +50,7 @@ public class Sellers {
         }
 
 
-
-        HashMap <String, Object> params = new HashMap<>();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("isArchived", false);
         params.put("page", 1);
         params.put("size", 100);
@@ -66,7 +65,7 @@ public class Sellers {
         CustomResponse customResponse = mapper.readValue(response1.asString(), CustomResponse.class);
 
         int size = customResponse.getResponses().size();
-        for(int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             int id = customResponse.getResponses().get(i).getCategory_id();
 
 
@@ -75,11 +74,10 @@ public class Sellers {
         }
 
 
-
     }
 
     @Test
-    public void createSellerWithNoEmail(){
+    public void createSellerWithNoEmail() {
         String url = Config.getProperty("cashwiseApiUrl") + "/api/myaccount/sellers";
         String token = CashWiseToken.GetToken();
 
@@ -89,20 +87,20 @@ public class Sellers {
         body.setPhone_number("4245235347");
         body.setAddress("123 Chicago st");
 
-       Response response = RestAssured.given().auth().oauth2(token)
-               .contentType(ContentType.JSON).body(body).post(url);
+        Response response = RestAssured.given().auth().oauth2(token)
+                .contentType(ContentType.JSON).body(body).post(url);
 
-       response.prettyPrint();
-       Assert.assertEquals(201, response.statusCode());
+        response.prettyPrint();
+        Assert.assertEquals(201, response.statusCode());
         System.out.println(response.statusCode());
     }
 
     @Test
-    public void unarchiveArchiveSeller(){
+    public void unarchiveArchiveSeller() {
         String url = Config.getProperty("cashwiseApiUrl") + "/api/myaccount/sellers/archive/unarchive";
         String token = CashWiseToken.GetToken();
 
-        HashMap <String, Object> params = new HashMap<>();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("archive", true);
         params.put("sellersIdsForArchive", 6328);
 
@@ -119,7 +117,7 @@ public class Sellers {
         String getUrl = Config.getProperty("cashwiseApiUrl") + "/api/myaccount/sellers";
         String token = CashWiseToken.GetToken();
 
-        HashMap <String, Object> params = new HashMap<>();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("isArchived", false);
         params.put("page", 1);
         params.put("size", 50);
@@ -133,15 +131,14 @@ public class Sellers {
         CustomResponse customResponse = mapper.readValue(response.asString(), CustomResponse.class);
 
 
-
         int size = customResponse.getResponses().size();
 
         String archiveUrl = Config.getProperty("cashwiseApiUrl") + "/api/myaccount/sellers/archive/unarchive";
 
-        HashMap <String, Object> archiveParams = new HashMap<>();
+        HashMap<String, Object> archiveParams = new HashMap<>();
 
 
-        for(int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
 
             archiveParams.put("sellersIdsForArchive", customResponse.getResponses().get(i).getSeller_id());
             archiveParams.put("archive", true);
@@ -149,7 +146,7 @@ public class Sellers {
             Response archiveResponse = RestAssured.given().auth().oauth2(token)
                     .params(archiveParams).post(archiveUrl);
 
-            Assert.assertEquals(200,archiveResponse.statusCode());
+            Assert.assertEquals(200, archiveResponse.statusCode());
         }
     }
 
@@ -158,10 +155,10 @@ public class Sellers {
         String getUrl = Config.getProperty("cashwiseApiUrl") + "/api/myaccount/sellers";
         String token = CashWiseToken.GetToken();
 
-        HashMap <String, Object> params = new HashMap<>();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("isArchived", true);
         params.put("page", 1);
-        params.put("size", 50);
+        params.put("size", 100);
 
 
         Response response = RestAssured.given().auth().oauth2(token).params(params).get(getUrl);
@@ -174,38 +171,85 @@ public class Sellers {
 
         String archiveURl = Config.getProperty("cashwiseApiUrl") + "/api/myaccount/sellers/archive/unarchive";
 
-      
+        for (int i = 0; i < size; i++) {
+            if(customResponse.getResponses().get(i).getEmail() != null){
 
-        for(int i = 0; i < size; i++){
-
-
-            if(customResponse.getResponses().get(i).getEmail().endsWith("@hotmail.com")){
+            if (customResponse.getResponses().get(i).getEmail().endsWith("@hotmail.com")) {
                 int id = customResponse.getResponses().get(i).getSeller_id();
 
-
-                Map <String, Object> archiveParams = new HashMap<>();
-                archiveParams.put("sellersIdsForArchive", id );
+                Map<String, Object> archiveParams = new HashMap<>();
+                archiveParams.put("sellersIdsForArchive", id);
                 archiveParams.put("archive", false);
 
                 Response response1 = RestAssured.given().auth().oauth2(token)
                         .params(archiveParams).post(archiveURl);
-
-
-
-
+                Assert.assertEquals(200, response1.statusCode());
 
             }
-
-
+            }
 
 
         }
 
 
-
     }
 
+    @Test
+    public void verifyCreatedSeller() throws JsonProcessingException {
+        String postUrl = Config.getProperty("cashwiseApiUrl") + "/api/myaccount/sellers";
+        String token = CashWiseToken.GetToken();
+        Faker faker = new Faker();
 
+        //"company_name": "string",
+        //  "seller_name": "string",
+        //  "email": "string",
+        //  "phone_number": "string",
+        //  "address": "string"
+
+        RequestBody body = new RequestBody();
+        body.setCompany_name(faker.company().name());
+        body.setSeller_name(faker.name().fullName());
+        body.setEmail(faker.internet().emailAddress());
+        body.setPhone_number(faker.phoneNumber().cellPhone());
+        body.setAddress(faker.address().streetAddress());
+
+        Response response = RestAssured.given().auth().oauth2(token)
+                .contentType(ContentType.JSON).body(body).post(postUrl);
+
+        Assert.assertEquals(201, response.statusCode());
+
+
+        ObjectMapper mapper = new ObjectMapper();
+        CustomResponse customResponse = mapper.readValue(response.asString(), CustomResponse.class);
+        int newSellerId = customResponse.getSeller_id();
+
+        String getUrl = Config.getProperty("cashwiseApiUrl") + "/api/myaccount/sellers";
+        Map <String, Object> params = new HashMap<>();
+        params.put("isArchived", false);
+        params.put("page", 1);
+        params.put("size", 100);
+
+
+        Response response1 = RestAssured.given().auth().oauth2(token).params(params).get(getUrl);
+        Assert.assertEquals(200, response1.statusCode());
+
+        CustomResponse customResponse1 = mapper.readValue(response1.asString(), CustomResponse.class);
+        int size = customResponse1.getResponses().size();
+
+        boolean isCreated = false;
+        for(int i = 0; i < size; i++){
+            if(customResponse1.getResponses().get(i).getSeller_id() == newSellerId){
+                isCreated = true;
+                break;
+            }
+        }
+        Assert.assertTrue(isCreated);
+
+
+
+
+
+    }
 
 
 
